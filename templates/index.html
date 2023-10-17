@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>User Management System</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <!-- Update User and Delete User Forms -->
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Update User</h2>
+                <form action="/update_user" method="POST">
+                    <div class="form-group">
+                        <label for="updateUid">User UID</label>
+                        <input type="text" class="form-control" id="updateUid" name="uid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newDisplayName">New Display Name</label>
+                        <input type="text" class="form-control" id="newDisplayName" name="new_display_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">New Email</label>
+                        <input type="email" class="form-control" id="newEmail" name="new_email">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <h2>Delete User</h2>
+                <form action="/delete_user" method="POST">
+                    <div class="form-group">
+                        <label for="deleteUid">User UID</label>
+                        <input type="text" class="form-control" id="deleteUid" name="uid" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Delete User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- User List Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <h2>User List</h2>
+                <ul id="userList" class="list-group">
+                    <!-- User List Will be Populated Here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // Fetch User List from Flask Route
+        fetch('/user_list')
+            .then(response => response.json())
+            .then(data => {
+                const userList = document.getElementById('userList');
+                data.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item');
+                    listItem.textContent = `UID: ${user.uid}, Email: ${user.email}`;
+                    userList.appendChild(listItem);
+                });
+            });
+        const updateForm = document.querySelector('form[action="/update_user"]');
+        updateForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(updateForm);
+            const response = await fetch('/update_user', {
+                method: 'POST',
+                body: formData
+            });
+            const responseData = await response.json();
+            alert(responseData.message);
+        });
+        const deleteForm = document.querySelector('form[action="/delete_user"]');
+        deleteForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(deleteForm);
+            const response = await fetch('/delete_user', {
+                method: 'POST',
+                body: formData
+            });
+            const responseData = await response.json();
+            alert(responseData.message);
+        });
+
+    </script>
+
+</body>
+
+</html>
