@@ -3,6 +3,7 @@ import pickle
 import firebase_admin
 from firebase_admin import credentials, auth
 from sklearn.ensemble import RandomForestRegressor
+from fastapi import FastAPI
 
 app = Flask(__name__)
 cred = credentials.Certificate("zenzephyr-ab6b5-firebase-adminsdk-a9pxu-c1600c1b01.json")
@@ -101,5 +102,5 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
